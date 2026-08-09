@@ -256,3 +256,31 @@ None.
 
 **NEXT STEP:**
 Run full test suite (`npm test`). Then build the Frontend visualization layer (`01_FRONTEND.md`).
+
+### TASK-006 - Curriculum-Aware Interview Engine
+
+**Date:** 2026-08-09
+**Tool:** Claude Code
+**Team/Area:** Backend
+**Status:** Completed
+
+**USER REQUEST:**
+C:\Users\NIKIL\Downloads\curriculum.json based on the curriculum it works fully and need to check the example candidated they provided . based on this they told to create give me a plan for including this
+
+**PROMPT USED:**
+Implement TASK-006: Integrate curriculum.json into the engine. Replace 5 generic belief keys with 8 module keys. Make Planner Agent curriculum-aware by injecting tools and objectives into prompts. Make Evaluator Agent check for objectives_hit. Allow starting sessions with curriculumScope and exampleCandidateId (candidate_strong, candidate_average, candidate_weak) for instant demo.
+
+**SOURCE SPECIFICATION:**
+* 02_AI_BACKEND.md
+* curriculum.json
+
+**FILES CHANGED:**
+- src/data/curriculum.js (NEW)
+- src/data/curriculum.json (NEW)
+- src/data/exampleCandidates.js (NEW)
+- src/services/beliefStateEngine.js (MODIFIED)
+- src/agents/plannerAgent.js (MODIFIED)
+- src/agents/evaluatorAgent.js (MODIFIED)
+- src/controllers/graphInterviewController.js (MODIFIED)
+-  4_HACKATHON_CODING_PROMPTS.md (MODIFIED)
+

@@ -1,18 +1,21 @@
+import { getModuleBeliefKeys, mapToolToModule } from "../data/curriculum.js";
+
 /**
  * Belief State Engine (Section 8 of 02_AI_BACKEND.md)
  * Maintains candidate mastery probabilities across technical topics.
  */
 
-export const DEFAULT_DOMAINS = ["rag", "agents", "mcp", "system_design", "deployment"];
-
-export function getInitialBeliefState() {
-  return {
-    rag: 0.50,
-    agents: 0.50,
-    mcp: 0.50,
-    system_design: 0.50,
-    deployment: 0.50
-  };
+export function getInitialBeliefState(moduleScope = null) {
+  const keys = getModuleBeliefKeys();
+  const state = {};
+  
+  if (moduleScope && typeof moduleScope === 'number') {
+    // If scoped, initialize all to 0 except the scoped one to focus on it
+    keys.forEach((k, idx) => { state[k] = (idx + 1 === moduleScope) ? 0.50 : 0.0; });
+  } else {
+    keys.forEach(k => { state[k] = 0.50; });
+  }
+  return state;
 }
 
 /**
@@ -20,10 +23,16 @@ export function getInitialBeliefState() {
  */
 export function updateBeliefState(currentBelief = getInitialBeliefState(), { topic = "system_design", accuracy = 0.5, depth = "structured" }) {
   const updated = { ...currentBelief };
-  const topicKey = (topic || "system_design").toLowerCase().replace(/[\s-]/g, "_");
-
-  // Determine target topic key or map to nearest domain
-  let targetKey = DEFAULT_DOMAINS.find(d => topicKey.includes(d)) || topicKey;
+  
+  // Try to map the topic to a curriculum module
+  let targetKey = mapToolToModule(topic);
+  
+  // If not found in curriculum, fall back to best guess or default to llm_prompting
+  if (!targetKey) {
+    const topicKey = (topic || "system_design").toLowerCase().replace(/[\s-]/g, "_");
+    const keys = getModuleBeliefKeys();
+    targetKey = keys.find(k => topicKey.includes(k)) || keys.find(k => k.includes(topicKey)) || "llm_prompting";
+  }
 
   const oldVal = updated[targetKey] !== undefined ? updated[targetKey] : 0.5;
 
@@ -51,11 +60,13 @@ export function getWeakestTopic(beliefState = getInitialBeliefState()) {
   let minScore = 2.0;
 
   for (const [topic, score] of Object.entries(beliefState)) {
-    if (score < minScore) {
+    // ignore topics that weren't being tracked (score = 0.0)
+    if (score > 0.0 && score < minScore) {
       minScore = score;
       weakest = topic;
     }
   }
 
-  return { topic: weakest || "system_design", score: minScore === 2.0 ? 0.5 : minScore };
+  return { topic: weakest || "llm_prompting", score: minScore === 2.0 ? 0.5 : minScore };
 }
+

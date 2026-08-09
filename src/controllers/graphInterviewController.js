@@ -7,6 +7,8 @@ import { getWeakestTopic } from "../services/beliefStateEngine.js";
 import { detectThinkingStyle } from "../services/thinkingStyleDetector.js";
 import { predictBreakpoint } from "../services/breakpointPredictor.js";
 import { recordSessionToMemory } from "../services/breetheMemory.js";
+import { EXAMPLE_CANDIDATES } from "../data/exampleCandidates.js";
+import { getCurriculumModule, getTopicsForModule, getAllObjectivesForModule } from "../data/curriculum.js";
 
 // Compiled LangGraph instances — built once, reused per request
 let _interviewGraph = null;
@@ -27,20 +29,32 @@ function getBattleGraph() {
 // ============================================================
 export async function startInterview(req, res) {
   try {
-    const { persona = "alex", targetRole = "AI Engineer" } = req.body || {};
+    const { persona = "alex", targetRole = "AI Engineer", curriculumScope = null, exampleCandidateId = null } = req.body || {};
 
     const session = createInterviewSession({ persona, targetRole });
+    session.curriculumScope = curriculumScope;
+    
+    // Check if we are loading an example candidate
+    if (exampleCandidateId && EXAMPLE_CANDIDATES[exampleCandidateId]) {
+      const demoCandidate = EXAMPLE_CANDIDATES[exampleCandidateId];
+      session.candidateId = demoCandidate.id;
+      session.beliefState = { ...demoCandidate.beliefState };
+      session.history = [...demoCandidate.history];
+      session.questionNumber = session.history.length + 1;
+    }
 
     const firstQuestion = await generateNextQuestion({
       personaId: session.persona,
       targetRole: session.targetRole,
-      questionNumber: 1,
-      history: [],
-      beliefState: session.beliefState
+      questionNumber: session.questionNumber || 1,
+      history: session.history || [],
+      beliefState: session.beliefState,
+      curriculumContext: session.curriculumScope,
+      candidateId: session.candidateId || "default_candidate"
     });
 
     session.history.push({
-      questionId: "q1",
+      questionId: `q${session.questionNumber || 1}`,
       question: firstQuestion,
       answer: null,
       confidence: null,
@@ -48,14 +62,23 @@ export async function startInterview(req, res) {
     });
 
     updateInterviewSession(session.sessionId, session);
-
-    return res.status(200).json({
+    
+    let returnPayload = {
       sessionId: session.sessionId,
       question: firstQuestion,
-      questionNumber: 1,
-      progress: 0.125,
+      questionNumber: session.questionNumber || 1,
+      progress: (session.questionNumber || 1) / 8,
       engine: "LangGraph StatefulGraph v1"
-    });
+    };
+    
+    if (curriculumScope && curriculumScope.moduleNumber) {
+      const moduleMeta = getCurriculumModule(curriculumScope.moduleNumber);
+      returnPayload.curriculumModule = moduleMeta ? `${moduleMeta.title} (Days ${moduleMeta.days.join("-")})` : `Module ${curriculumScope.moduleNumber}`;
+      returnPayload.topicsInScope = getTopicsForModule(curriculumScope.moduleNumber);
+      returnPayload.objectivesToProbe = getAllObjectivesForModule(curriculumScope.moduleNumber).length;
+    }
+
+    return res.status(200).json(returnPayload);
   } catch (error) {
     console.error("[Graph Start Interview Error]:", error);
     return res.status(500).json({ error: "Failed to initialize graph interview session." });
