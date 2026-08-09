@@ -69,7 +69,12 @@ const Hero = () => (
         custom={3}
         style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', alignItems: 'center' }}
       >
-        <Link to="/interview" className="btn btn-primary" style={{ padding: '0.9rem 2rem' }}>Start an Interview</Link>
+        <Link to="/interview" className="btn btn-primary" style={{ padding: '0.9rem 2rem' }}>
+          Start an Interview
+        </Link>
+        <Link to="/interview?demo=true" className="btn" style={{ padding: '0.9rem 2rem', borderColor: 'var(--accent-electric)', color: 'var(--accent-electric)', background: 'rgba(0, 210, 255, 0.05)' }}>
+          ▶ Launch Auto-Demo Mode
+        </Link>
         <a href="#how-it-thinks" className="nav-link" style={{ fontSize: '0.95rem', letterSpacing: '0.05em' }}>
           See How It Works →
         </a>

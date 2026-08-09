@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 
-const QuestionPanel = ({ question, answer, onChange, onKeyDown, isSubmitting = false }) => {
+const QuestionPanel = ({ question, answer, onChange, onKeyDown, onAutoFill, isSubmitting = false }) => {
   const textareaRef = useRef(null);
 
   const autoResize = () => {
@@ -18,14 +18,26 @@ const QuestionPanel = ({ question, answer, onChange, onKeyDown, isSubmitting = f
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
         <span className="mono" style={{ fontSize: '0.72rem', letterSpacing: '0.18em', color: 'var(--accent-electric)' }}>
           QUESTION {String(question.number || 1).padStart(2, '0')}
         </span>
-        {question.category && (
-          <span className="badge" style={{ fontSize: '0.7rem' }}>
-            {question.category.toUpperCase()}
-          </span>
+
+        {onAutoFill && (
+          <button
+            type="button"
+            onClick={onAutoFill}
+            className="btn"
+            style={{
+              padding: '0.25rem 0.75rem',
+              fontSize: '0.72rem',
+              borderColor: 'var(--border-accent)',
+              color: 'var(--accent-electric)',
+              background: 'rgba(0, 210, 255, 0.05)'
+            }}
+          >
+            ⚡ Auto-Fill Expert Answer
+          </button>
         )}
       </div>
 

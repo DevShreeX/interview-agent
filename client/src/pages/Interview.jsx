@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import InterviewHeader from '../components/interview/InterviewHeader';
 import QuestionPanel from '../components/interview/QuestionPanel';
 import ConfidenceSelector from '../components/interview/ConfidenceSelector';
+import AutoDemoBar from '../components/interview/AutoDemoBar';
 import { startInterviewAPI, continueInterviewAPI, completeInterviewAPI } from '../services/api';
 import { personas } from '../data/demoData';
+import { getRandomSampleAnswer } from '../data/sampleAnswers';
 
 const EvaluatingState = () => (
   <motion.div
@@ -43,7 +45,20 @@ const Interview = () => {
   const [answer, setAnswer] = useState('');
   const [confidence, setConfidence] = useState(0);
   const [status, setStatus] = useState('loading'); // loading | ready | evaluating
+
+  // Auto-Demo Simulation State
+  const [isDemoPlaying, setIsDemoPlaying] = useState(false);
+  const [demoSpeed, setDemoSpeed] = useState(2);
+  const typingTimerRef = useRef(null);
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('demo') === 'true') {
+      setIsDemoPlaying(true);
+    }
+  }, []);
 
   useEffect(() => {
     async function initSession() {
@@ -102,10 +117,46 @@ const Interview = () => {
     }
   };
 
+  // 1-Click Quick Auto-Fill
+  const handleAutoFill = () => {
+    const sample = getRandomSampleAnswer('rag');
+    setAnswer(sample);
+    setConfidence(4);
+  };
+
+  // Typewriter Auto-Demo Loop Effect
+  useEffect(() => {
+    if (!isDemoPlaying || status !== 'ready') return;
+
+    const sample = getRandomSampleAnswer('rag');
+    let idx = 0;
+    setAnswer('');
+    setConfidence(0);
+
+    const interval = setInterval(() => {
+      if (idx < sample.length) {
+        setAnswer(sample.slice(0, idx + 1));
+        idx++;
+      } else {
+        clearInterval(interval);
+        setConfidence(4);
+
+        // Auto submit after a brief pause
+        setTimeout(() => {
+          if (isDemoPlaying) {
+            handleSubmit();
+          }
+        }, 1000 / demoSpeed);
+      }
+    }, Math.max(10, 35 / demoSpeed));
+
+    return () => clearInterval(interval);
+  }, [isDemoPlaying, status, currentQuestion.number]);
+
   const activePersona = personas.find((p) => p.id === currentPersonaId) || personas[0];
 
   return (
-    <div className="container section" style={{ paddingTop: '3rem', paddingBottom: '4rem' }}>
+    <div className="container section" style={{ paddingTop: '3rem', paddingBottom: '6rem' }}>
       <AnimatePresence mode="wait">
         {status === 'evaluating' || status === 'loading' ? (
           <EvaluatingState key="evaluating" />
@@ -202,6 +253,7 @@ const Interview = () => {
                   answer={answer}
                   onChange={setAnswer}
                   onKeyDown={handleKeyDown}
+                  onAutoFill={handleAutoFill}
                   isSubmitting={status === 'evaluating'}
                 />
 
@@ -209,7 +261,7 @@ const Interview = () => {
 
                 <ConfidenceSelector value={confidence} onChange={setConfidence} />
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
                   <button
                     type="button"
                     className="btn btn-primary"
@@ -225,6 +277,15 @@ const Interview = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Floating Auto-Demo Player Control Bar */}
+      <AutoDemoBar
+        isPlaying={isDemoPlaying}
+        onTogglePlay={() => setIsDemoPlaying(!isDemoPlaying)}
+        speed={demoSpeed}
+        onChangeSpeed={setDemoSpeed}
+        onQuickFill={handleAutoFill}
+      />
     </div>
   );
 };
