@@ -11,13 +11,13 @@
         "sessionNumber": 1,
         "readiness": 58,
         "averageCalibrationDelta": 1.7,
-        "date": "2026-08-09T13:14:45.255Z"
+        "date": "2026-08-09T14:08:03.945Z"
       },
       {
         "sessionNumber": 2,
         "readiness": 64,
         "averageCalibrationDelta": 1.1,
-        "date": "2026-08-09T13:14:45.259Z"
+        "date": "2026-08-09T14:08:03.956Z"
       }
     ],
     "staleTopics": [
@@ -26,14 +26,14 @@
     "unresolvedWeaknesses": [],
     "battleRecoveryHistory": [
       {
-        "date": "2026-08-09T13:14:45.260Z",
+        "date": "2026-08-09T14:08:03.958Z",
         "weakestTopic": "system_design",
         "beforeScore": 0.48,
         "afterScore": 0.64,
         "riskChange": 16
       }
     ],
-    "lastSessionDate": "2026-08-09T13:14:45.259Z",
+    "lastSessionDate": "2026-08-09T14:08:03.956Z",
     "metacognitiveTraits": []
   },
   "default_candidate": {
@@ -54,13 +54,13 @@
         "sessionNumber": 1,
         "readiness": 50,
         "averageCalibrationDelta": 0,
-        "date": "2026-08-09T13:14:47.486Z"
+        "date": "2026-08-09T14:08:10.498Z"
       },
       {
         "sessionNumber": 2,
         "readiness": 50,
         "averageCalibrationDelta": 1,
-        "date": "2026-08-09T13:14:47.981Z"
+        "date": "2026-08-09T14:08:15.007Z"
       }
     ],
     "staleTopics": [
@@ -77,7 +77,7 @@
       "env_tooling"
     ],
     "battleRecoveryHistory": [],
-    "lastSessionDate": "2026-08-09T13:14:47.981Z",
+    "lastSessionDate": "2026-08-09T14:08:15.007Z",
     "metacognitiveTraits": [
       "Pattern Matcher"
     ]
