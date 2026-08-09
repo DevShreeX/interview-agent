@@ -399,3 +399,43 @@ Conduct a Ponytail Optimization on the codebase to eliminate dead code, single-c
 - `npm test`: All 21 tests passing (100%).
 - Successfully committed and pushed to remote branch via git.
 
+---
+
+### [TASK-010] — Breethe API Live Fix & Comprehensive Edge Case Testing
+
+**Date:** 2026-08-09
+**Tool:** Gemini / Antigravity
+**Team/Area:** API Integration & QA
+**Status:** Completed
+
+**USER REQUEST:**
+`which give me a full flow for the using the agent to test my website`
+`do the  a , b  complete fully`
+`Breethe API`
+`upadte our speaking in prompts.md for the hackthon coding`
+
+**PROMPT USED:**
+Fix the `422 Unprocessable Entity` warning hitting the live Breethe API endpoint in `breetheMemory.js` by correcting the payload structure to use `content` string instead of a `messages` array. Implement complete test coverage for the error handling branches in `memoryController.js` and `graphInterviewController.js` by introducing `supertest` and resolving missing coverage lines.
+
+**SOURCE SPECIFICATION:**
+* `03_MEMORY_PRIVACY_PROMPTS.md`
+
+**FILES CHANGED:**
+- `src/services/breetheMemory.js` [MODIFIED] — Corrected JSON payload format and muted network calls when `NODE_ENV=test`
+- `package.json` [MODIFIED] — Added `supertest` dev dependency
+- `test/memoryCoverage.test.js` [NEW] — Added integration tests for memory search and clear errors
+- `test/interviewCoverage.test.js` [NEW] — Added validation tests for continue, complete, and battle session gates
+- `pingBreeth.js` [NEW] — Scratch script to verify live Breethe API ping
+
+**IMPLEMENTATION:**
+1. Modified `getApiKey()` in `breetheMemory.js` to return empty string during testing (`process.env.NODE_ENV === 'test'`) preventing erroneous live pings during CI.
+2. Formatted Breethe `POST /v1/episodes` payload to concatenate messages into a single `content` prose string with `extract_intent: true`.
+3. Created `memoryCoverage.test.js` and `interviewCoverage.test.js` using `supertest` to trigger all previously untested 400 and 404 error handlers.
+
+**TESTS / VALIDATION:**
+- Executed `$env:NODE_ENV='test'; node --experimental-test-coverage --test`: Expanded test suite from 21 tests to 28 tests (100% passing).
+- Controller coverage jumped significantly.
+- Executed `node pingBreeth.js`: Successfully verified a live `ok: true` payload delivery to Breethe cloud.
+
+**RESULT:**
+SUCCESS

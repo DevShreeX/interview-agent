@@ -44,6 +44,7 @@ loadMemoryFromDisk();
 const BREETH_API_BASE = "https://api.thebreeth.com/v1";
 
 function getApiKey() {
+  if (process.env.NODE_ENV === 'test') return "";
   return process.env.MEMORY_API_KEY || process.env.LLM_API_KEY || "";
 }
 
@@ -58,13 +59,15 @@ export async function saveBreethEpisode(messages) {
   }
 
   try {
+    // Convert the messages array into a single prose string for Breethe
+    const proseContent = messages.map(m => m.content).join("\\n\\n");
     const res = await fetch(`${BREETH_API_BASE}/episodes`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ messages })
+      body: JSON.stringify({ content: proseContent, extract_intent: true })
     });
 
     if (!res.ok) {
