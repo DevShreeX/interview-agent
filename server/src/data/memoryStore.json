@@ -1,0 +1,105 @@
+{
+  "cand_test_99": {
+    "candidateId": "cand_test_99",
+    "interviewCount": 2,
+    "beliefState": {
+      "system_design": 0.61,
+      "rag": 0.7
+    },
+    "growthTrajectory": [
+      {
+        "sessionNumber": 1,
+        "readiness": 58,
+        "averageCalibrationDelta": 1.7,
+        "date": "2026-08-09T13:14:45.255Z"
+      },
+      {
+        "sessionNumber": 2,
+        "readiness": 64,
+        "averageCalibrationDelta": 1.1,
+        "date": "2026-08-09T13:14:45.259Z"
+      }
+    ],
+    "staleTopics": [
+      "system_design"
+    ],
+    "unresolvedWeaknesses": [],
+    "battleRecoveryHistory": [
+      {
+        "date": "2026-08-09T13:14:45.260Z",
+        "weakestTopic": "system_design",
+        "beforeScore": 0.48,
+        "afterScore": 0.64,
+        "riskChange": 16
+      }
+    ],
+    "lastSessionDate": "2026-08-09T13:14:45.259Z",
+    "metacognitiveTraits": []
+  },
+  "default_candidate": {
+    "candidateId": "default_candidate",
+    "interviewCount": 2,
+    "beliefState": {
+      "env_tooling": 0.5,
+      "data_foundations": 0.5,
+      "embeddings_vector": 0.5,
+      "llm_prompting": 0.53,
+      "chatbot_build": 0.5,
+      "agentic_mcp": 0.5,
+      "eval_security_deploy": 0.5,
+      "production_capstone": 0.5
+    },
+    "growthTrajectory": [
+      {
+        "sessionNumber": 1,
+        "readiness": 50,
+        "averageCalibrationDelta": 0,
+        "date": "2026-08-09T13:14:47.486Z"
+      },
+      {
+        "sessionNumber": 2,
+        "readiness": 50,
+        "averageCalibrationDelta": 1,
+        "date": "2026-08-09T13:14:47.981Z"
+      }
+    ],
+    "staleTopics": [
+      "env_tooling",
+      "data_foundations",
+      "embeddings_vector",
+      "llm_prompting",
+      "chatbot_build",
+      "agentic_mcp",
+      "eval_security_deploy",
+      "production_capstone"
+    ],
+    "unresolvedWeaknesses": [
+      "env_tooling"
+    ],
+    "battleRecoveryHistory": [],
+    "lastSessionDate": "2026-08-09T13:14:47.981Z",
+    "metacognitiveTraits": [
+      "Pattern Matcher"
+    ]
+  },
+  "CAND-003": {
+    "candidateId": "CAND-003",
+    "interviewCount": 0,
+    "beliefState": {
+      "env_tooling": 0.5,
+      "data_foundations": 0.5,
+      "embeddings_vector": 0.5,
+      "llm_prompting": 0.5,
+      "chatbot_build": 0.5,
+      "agentic_mcp": 0.5,
+      "eval_security_deploy": 0.5,
+      "production_capstone": 0.5
+    },
+    "growthTrajectory": [],
+    "staleTopics": [],
+    "unresolvedWeaknesses": [],
+    "battleRecoveryHistory": [],
+    "lastSessionDate": null,
+    "metacognitiveTraits": []
+  }
+}

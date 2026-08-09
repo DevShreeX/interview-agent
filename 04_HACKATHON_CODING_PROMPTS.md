@@ -291,7 +291,7 @@ SUCCESS — All 8 modules integrated. 20 candidate profiles loaded. 21/21 backen
 **Status:** Completed
 
 **USER REQUEST:**
-`for memoery we use a sperate api key . push this currently` & `curl --request POST --url https://api.thebreeth.com/v1/episodes ... search memory add this ... [REDACTED] add this key`
+`for memoery we use a sperate api key . push this currently` & `curl --request POST --url https://api.thebreeth.com/v1/episodes ... search memory add this ... ck_live_zpyM1Is-y83vIjjX9P-rV2Fs2cF_trkLATQBcR6fieg add this key`
 
 **PROMPT USED:**
 Integrate official Breeth Cloud Memory REST API (`https://api.thebreeth.com/v1`) into `src/services/breetheMemory.js`.
@@ -362,3 +362,80 @@ Audit and fix all 5 highlighted quality issues:
 **TESTS / VALIDATION:**
 - `npm test`: All 21 tests passing.
 - API E2E Test (`node --test test/api.test.js`): 100% passing.
+
+---
+### TASK-009: Ponytail Refactoring - Controller Consolidation & Optimization
+
+**USER REQUEST:**
+`/ponytail-audit`
+`create a plan also /ponytail-review`
+`push to git on ur name`
+`forgot to update on the md file`
+
+**PROMPT USED:**
+Conduct a Ponytail Optimization on the codebase to eliminate dead code, single-caller abstractions, redundant controllers, and fragmented router files. Ensure zero breakage of existing API contracts and tests.
+1. Remove redundant `battleController.js` and rewire `POST /api/battle/turn` directly to `battleGraphTurn` in `graphInterviewController.js`.
+2. Consolidate 5 disparate router files into a single `src/routes.js` and mount it gracefully in `server.js`.
+3. Simplify LLM string parsing in `jsonParser.js` by removing manual index searching and implementing a regex matcher.
+4. Push the refactored code to Git using the name "Antigravity AI".
+
+**SOURCE SPECIFICATION:**
+* `02_AI_BACKEND.md`
+
+**FILES CHANGED:**
+- `src/controllers/battleController.js` [DELETED] - Redundant controller removed
+- `src/routes.js` [NEW] - Unified routing file created
+- `src/routes/interviewRoutes.js` [DELETED]
+- `src/routes/battleRoutes.js` [DELETED]
+- `src/routes/reportRoutes.js` [DELETED]
+- `src/routes/memoryRoutes.js` [DELETED]
+- `src/routes/cohortRoutes.js` [DELETED]
+- `src/server.js` [MODIFIED] - Mounted unified router
+- `src/controllers/graphInterviewController.js` [MODIFIED] - Auto-initialized battle session
+- `src/utils/jsonParser.js` [MODIFIED] - Simplified parsing logic with regex
+- `test/api.test.js` [MODIFIED] - Updated to hit new `/api/battle/turn` endpoint
+
+**TESTS / VALIDATION:**
+- `npm test`: All 21 tests passing (100%).
+- Successfully committed and pushed to remote branch via git.
+
+---
+
+### [TASK-010] — Breethe API Live Fix & Comprehensive Edge Case Testing
+
+**Date:** 2026-08-09
+**Tool:** Gemini / Antigravity
+**Team/Area:** API Integration & QA
+**Status:** Completed
+
+**USER REQUEST:**
+`which give me a full flow for the using the agent to test my website`
+`do the  a , b  complete fully`
+`Breethe API`
+`upadte our speaking in prompts.md for the hackthon coding`
+
+**PROMPT USED:**
+Fix the `422 Unprocessable Entity` warning hitting the live Breethe API endpoint in `breetheMemory.js` by correcting the payload structure to use `content` string instead of a `messages` array. Implement complete test coverage for the error handling branches in `memoryController.js` and `graphInterviewController.js` by introducing `supertest` and resolving missing coverage lines.
+
+**SOURCE SPECIFICATION:**
+* `03_MEMORY_PRIVACY_PROMPTS.md`
+
+**FILES CHANGED:**
+- `src/services/breetheMemory.js` [MODIFIED] — Corrected JSON payload format and muted network calls when `NODE_ENV=test`
+- `package.json` [MODIFIED] — Added `supertest` dev dependency
+- `test/memoryCoverage.test.js` [NEW] — Added integration tests for memory search and clear errors
+- `test/interviewCoverage.test.js` [NEW] — Added validation tests for continue, complete, and battle session gates
+- `pingBreeth.js` [NEW] — Scratch script to verify live Breethe API ping
+
+**IMPLEMENTATION:**
+1. Modified `getApiKey()` in `breetheMemory.js` to return empty string during testing (`process.env.NODE_ENV === 'test'`) preventing erroneous live pings during CI.
+2. Formatted Breethe `POST /v1/episodes` payload to concatenate messages into a single `content` prose string with `extract_intent: true`.
+3. Created `memoryCoverage.test.js` and `interviewCoverage.test.js` using `supertest` to trigger all previously untested 400 and 404 error handlers.
+
+**TESTS / VALIDATION:**
+- Executed `$env:NODE_ENV='test'; node --experimental-test-coverage --test`: Expanded test suite from 21 tests to 28 tests (100% passing).
+- Controller coverage jumped significantly.
+- Executed `node pingBreeth.js`: Successfully verified a live `ok: true` payload delivery to Breethe cloud.
+
+**RESULT:**
+SUCCESS
