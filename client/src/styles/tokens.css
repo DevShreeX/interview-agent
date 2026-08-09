@@ -1,40 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  /* ── Color palette — Modern Dark Cinema + AI-Native ───────────────────── */
-  --bg-void: #020203;
-  --bg-base: #06060A;
-  --bg-elevated: #0E0E16;
-  --bg-surface: rgba(255, 255, 255, 0.04);
-  --bg-surface-hover: rgba(255, 255, 255, 0.07);
+  /* ── Color Palette — Clean Ultra-Dark AI Glassmorphic ─────────────────── */
+  --bg-void: #030712;
+  --bg-base: #0B0F19;
+  --bg-elevated: rgba(17, 24, 39, 0.75);
+  --bg-surface: rgba(255, 255, 255, 0.03);
+  --bg-surface-hover: rgba(255, 255, 255, 0.06);
 
-  --text-primary: #EDEDEF;
-  --text-secondary: #8A8F98;
-  --text-muted: #4A4D57;
+  --text-primary: #F9FAFB;
+  --text-secondary: #9CA3AF;
+  --text-muted: #4B5563;
 
-  --accent-electric: #00D2FF;
-  --accent-indigo: #5E6AD2;
+  --accent-electric: #00F0FF;
+  --accent-indigo: #8B5CF6;
   --accent-amber: #F59E0B;
-  --accent-danger: #EF4444;
+  --accent-danger: #F43F5E;
   --accent-success: #10B981;
 
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-accent: rgba(0, 210, 255, 0.25);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-accent: rgba(0, 240, 255, 0.3);
+  --border-danger: rgba(244, 63, 94, 0.35);
 
-  --glow-electric: 0 0 20px rgba(0, 210, 255, 0.15);
-  --glow-indigo: 0 0 20px rgba(94, 106, 210, 0.15);
-  --glow-amber: 0 0 20px rgba(245, 158, 11, 0.12);
-  --glow-danger: 0 0 20px rgba(239, 68, 68, 0.15);
+  --glow-electric: 0 0 24px rgba(0, 240, 255, 0.18);
+  --glow-indigo: 0 0 24px rgba(139, 92, 246, 0.18);
+  --glow-amber: 0 0 24px rgba(245, 158, 11, 0.15);
+  --glow-danger: 0 0 24px rgba(244, 63, 94, 0.2);
 
   /* ── Typography ──────────────────────────────────────────────────────── */
   --font-display: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
-  /* ── Radius & spacing ────────────────────────────────────────────────── */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --container-max: 1200px;
-  --container-narrow: 720px;
+  /* ── Radius & Spacing Scale ──────────────────────────────────────────── */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --container-max: 1240px;
+  --container-narrow: 760px;
 }

@@ -20,13 +20,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   background-image:
-    radial-gradient(1200px 600px at 50% -10%, rgba(0, 210, 255, 0.05), transparent 60%),
-    radial-gradient(900px 500px at 100% 20%, rgba(94, 106, 210, 0.04), transparent 55%);
+    radial-gradient(1000px 500px at 50% -10%, rgba(0, 240, 255, 0.05), transparent 60%),
+    radial-gradient(800px 400px at 100% 20%, rgba(139, 92, 246, 0.04), transparent 55%);
   background-attachment: fixed;
 }
 
 ::selection {
-  background: rgba(0, 210, 255, 0.25);
+  background: rgba(0, 240, 255, 0.25);
   color: var(--text-primary);
 }
 
@@ -35,7 +35,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   font-weight: 600;
   letter-spacing: -0.03em;
-  line-height: 1.15;
+  line-height: 1.2;
   margin-bottom: 1rem;
   color: var(--text-primary);
 }
@@ -69,7 +69,7 @@ a {
 }
 
 .section {
-  padding: 6rem 0;
+  padding: 5rem 0;
 }
 
 .mono {
@@ -77,13 +77,15 @@ a {
   font-feature-settings: 'tnum' 1;
 }
 
-/* ── Cards (sharp, instrument-grade) ────────────────────────────────────── */
+/* ── Cards (glassmorphic, instrument-grade) ────────────────────────────── */
 .card {
   background: var(--bg-elevated);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 1.5rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
 
 .card:hover {
@@ -108,10 +110,10 @@ a {
   font-family: var(--font-body);
   font-weight: 500;
   font-size: 0.875rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   border: 1px solid var(--border-subtle);
-  background: transparent;
+  background: var(--bg-surface);
   color: var(--text-primary);
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -120,26 +122,27 @@ a {
 
 .btn:hover {
   border-color: var(--border-accent);
+  background: var(--bg-surface-hover);
 }
 
 .btn-primary {
   border-color: var(--border-accent);
   color: var(--accent-electric);
-  box-shadow: inset 0 0 12px rgba(0, 210, 255, 0.06);
+  box-shadow: inset 0 0 12px rgba(0, 240, 255, 0.08);
 }
 
 .btn-primary:hover {
-  background: rgba(0, 210, 255, 0.08);
+  background: rgba(0, 240, 255, 0.1);
   box-shadow: var(--glow-electric);
 }
 
 .btn-danger {
-  border-color: rgba(239, 68, 68, 0.4);
+  border-color: var(--border-danger);
   color: var(--accent-danger);
 }
 
 .btn-danger:hover {
-  background: rgba(239, 68, 68, 0.08);
+  background: rgba(244, 63, 94, 0.1);
   box-shadow: var(--glow-danger);
 }
 
@@ -167,11 +170,11 @@ a {
 .badge-electric {
   border-color: var(--border-accent);
   color: var(--accent-electric);
-  box-shadow: inset 0 0 10px rgba(0, 210, 255, 0.05);
+  box-shadow: inset 0 0 10px rgba(0, 240, 255, 0.05);
 }
 
 .badge-indigo {
-  border-color: rgba(94, 106, 210, 0.35);
+  border-color: rgba(139, 92, 246, 0.35);
   color: var(--accent-indigo);
 }
 
@@ -181,7 +184,7 @@ a {
 }
 
 .badge-danger {
-  border-color: rgba(239, 68, 68, 0.35);
+  border-color: rgba(244, 63, 94, 0.35);
   color: var(--accent-danger);
 }
 
@@ -190,7 +193,7 @@ a {
   color: var(--accent-success);
 }
 
-/* ── Progress bar ───────────────────────────────────────────────────────── */
+/* ── Progress Bar ───────────────────────────────────────────────────────── */
 .progress-track {
   border: 1px solid var(--border-subtle);
 }
@@ -211,7 +214,7 @@ a {
   transform: translateY(-2px);
 }
 
-/* ── Responsive grid utilities ──────────────────────────────────────────── */
+/* ── Responsive Grids ───────────────────────────────────────────────────── */
 .grid-2, .grid-3, .grid-calibration {
   display: grid;
   gap: 1.5rem;
@@ -228,13 +231,13 @@ a {
 
 @media (max-width: 760px) {
   .grid-2 { grid-template-columns: 1fr; }
-  .section { padding: 4rem 0; }
+  .section { padding: 3.5rem 0; }
   .container, .container-narrow { padding: 0 1.25rem; }
 }
 
-/* ── Scrollbar ──────────────────────────────────────────────────────────── */
+/* ── Custom Scrollbar ───────────────────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg-void);
@@ -242,13 +245,13 @@ a {
 ::-webkit-scrollbar-thumb {
   background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
-  border-radius: 6px;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
 }
 
-/* ── Shared animation primitives ────────────────────────────────────────── */
+/* ── Animations ─────────────────────────────────────────────────────────── */
 @keyframes pulse-dot {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
@@ -259,9 +262,9 @@ a {
   50% { opacity: 0.2; }
 }
 
-@keyframes float-slow {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
