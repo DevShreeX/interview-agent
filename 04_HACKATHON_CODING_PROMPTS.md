@@ -199,6 +199,60 @@ SUCCESS
 **ISSUES:**
 None.
 
+
 **NEXT STEP:**
 Build Frontend experience according to `01_FRONTEND.md` (Landing Page with Knowledge Network visual, Calibration Gap visualizer, `/interview`, `/report`, `/battle`, `/memory`).
 
+---
+
+### [TASK-005] — LangGraph Metacognitive Self-Thinking Engine
+
+**Date:** 2026-08-09
+**Tool:** Claude Code (Antigravity)
+**Team/Area:** Backend / AI Reasoning
+**Status:** Completed
+
+**USER REQUEST:**
+"langraph we can bring and what it will make me as standout in the hackthon" followed by "build it"
+
+**PROMPT USED:**
+Install `@langchain/langgraph @langchain/core`. Implement a stateful LangGraph `StateGraph` with conditional routing for the interview pipeline. Build two graphs:
+1. `interviewGraph.js` — 6-node interview decision graph: Evaluate → Calibrate → UpdateBelief → (conditional) Think → Plan → SelfCritique
+2. `battleGraph.js` — 4-node Battle Mode pressure graph: BattleEvaluate → RoutePressure → GenerateQuestion → BattleCritique
+Wire both graphs through `graphInterviewController.js` replacing direct agent calls in `interviewController.js`.
+
+**SOURCE SPECIFICATION:**
+- `02_AI_BACKEND.md` — Section 11 (Battle Mode), Section 12 (Calibration Engine), Section 13 (Belief State)
+- `03_MEMORY_PRIVACY_PROMPTS.md` — Section 28 (Privacy Audit logging)
+
+**FILES CHANGED:**
+- `src/graphs/graphState.js` [NEW] — LangGraph `Annotation.Root` state schemas for both graphs
+- `src/graphs/interviewGraph.js` [NEW] — Stateful 6-node interview decision graph with conditional routing
+- `src/graphs/battleGraph.js` [NEW] — Stateful 4-node battle mode pressure graph
+- `src/controllers/graphInterviewController.js` [NEW] — Graph-powered replacement for `interviewController.js`
+- `src/routes/interviewRoutes.js` [MODIFIED] — Wired to `graphInterviewController.js`; added `/battle/turn` route
+- `test/graphEngine.test.js` [NEW] — Smoke tests for graph compilation and handler exports
+- `04_HACKATHON_CODING_PROMPTS.md` [MODIFIED] — This record appended
+
+**IMPLEMENTATION SUMMARY:**
+The LangGraph engine gives the AI interview agent a stateful decision graph with conditional routing. After each candidate answer, the graph:
+1. **Evaluates** the answer (accuracy, depth, misconceptions)
+2. **Calibrates** the confidence-accuracy delta (deterministic)
+3. **Updates** the Bayesian belief state
+4. **Conditionally routes** — if overconfidence/misconception detected → ThinkingNode runs internal metacognitive hypothesis; else → skips straight to Planner
+5. **Plans** the next question using strategic intent from ThinkingNode
+6. **Self-Critiques** the generated question (generic detection, repetition guard) — if it fails, the AI rewrites it before delivery
+
+The Battle Graph cycles: Evaluate → decide pressure angle → generate question → self-critique, for all 5 pressure steps.
+
+**RESULT:**
+SUCCESS — `@langchain/langgraph` 22 packages installed. All 4 files created. Routes updated. Smoke tests pass.
+
+**HACKATHON DIFFERENTIATOR:**
+The `_graphMeta` field in every API response exposes `{ strategicIntent, nodesTraversed, questionRefined, calibrationCategory }` — judges can see the AI's live reasoning graph in the JSON response itself.
+
+**ISSUES:**
+None.
+
+**NEXT STEP:**
+Run full test suite (`npm test`). Then build the Frontend visualization layer (`01_FRONTEND.md`).
