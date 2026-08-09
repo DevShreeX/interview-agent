@@ -145,4 +145,60 @@ SUCCESS
 None.
 
 **NEXT STEP:**
-Build Frontend experience according to `01_FRONTEND.md` (Landing, Interview UI, Calibration Gap visualization, Battle Mode UI).
+Build Memory & Privacy Layer per `03_MEMORY_PRIVACY_PROMPTS.md` and complete integration.
+
+---
+
+### [TASK-004] — Memory, Privacy Architecture, Prompt Registry & Cohort Intelligence Integration
+
+**Date:** 2026-08-09
+**Tool:** Antigravity / Gemini
+**Team/Area:** Memory / Privacy / Backend Integration
+**Status:** Completed
+
+**USER REQUEST:**
+`we will be building the 2 and 3 now`
+
+**PROMPT USED:**
+Build and integrate `03_MEMORY_PRIVACY_PROMPTS.md` with existing backend intelligence engine: Centralized prompt registry with versioning, PII-free prompt privacy audit logging, Breethe memory & cross-session trajectory tracking, and privacy-safe cohort intelligence reporting.
+
+**SOURCE SPECIFICATION:**
+- `02_AI_BACKEND.md`
+- `03_MEMORY_PRIVACY_PROMPTS.md`
+
+**FILES CHANGED:**
+- `src/config/promptRegistry.js`
+- `src/services/privacyAudit.js`
+- `src/services/breetheMemory.js`
+- `src/services/cohortService.js`
+- `src/agents/plannerAgent.js`
+- `src/agents/evaluatorAgent.js`
+- `src/controllers/interviewController.js`
+- `src/controllers/memoryController.js`
+- `src/controllers/cohortController.js`
+- `src/routes/memoryRoutes.js`
+- `src/routes/cohortRoutes.js`
+- `src/server.js`
+- `test/privacyAudit.test.js`
+- `test/memory.test.js`
+- `test/cohort.test.js`
+
+**IMPLEMENTATION:**
+1. Created Prompt Registry (`src/config/promptRegistry.js`) containing versioned prompt templates (`MASTER_V1`, `PRIVACY_WRAPPER_V1`, `PLANNER_V1`, `EVALUATOR_V1`, `ALEX_V1`, `PRIYA_V1`, `MARCUS_V1`, etc.).
+2. Created Privacy Audit service (`src/services/privacyAudit.js`) to log prompt metadata while hashing session identifiers and excluding raw PII.
+3. Created Breethe Memory service (`src/services/breetheMemory.js`) to persist candidate growth trajectory ($58 \rightarrow 64 \rightarrow 72$, calibration deltas $+1.7 \rightarrow +1.1 \rightarrow +0.4$), flag stale topics, and supply cross-session context to the Planner Agent.
+4. Created Cohort Intelligence service (`src/services/cohortService.js`) to report anonymized aggregate percentiles with threshold safety (`insufficient_data` when cohort size $< 5$).
+5. Added routes & controllers for `GET /api/memory`, `POST /api/memory/clear`, and `GET /api/cohort`.
+
+**TESTS / VALIDATION:**
+- `npm test`: Executed 13 unit & E2E integration tests. All 13 passed (100% success rate).
+
+**RESULT:**
+SUCCESS
+
+**ISSUES:**
+None.
+
+**NEXT STEP:**
+Build Frontend experience according to `01_FRONTEND.md` (Landing Page with Knowledge Network visual, Calibration Gap visualizer, `/interview`, `/report`, `/battle`, `/memory`).
+

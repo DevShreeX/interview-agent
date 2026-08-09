@@ -1,36 +1,50 @@
 import { generateStructuredJSON } from "../config/llm.js";
+import { buildSystemPrompt } from "../config/promptRegistry.js";
+import { logPrivacyAudit } from "../services/privacyAudit.js";
 
 /**
- * Evaluator Agent (Section 4 of 02_AI_BACKEND.md)
- * Evaluates candidate technical answers objectively without inventing evidence.
+ * Evaluator Agent (Section 4 of 02_AI_BACKEND.md & Section 13 of 03_MEMORY_PRIVACY_PROMPTS.md)
  */
 
-export async function evaluateAnswer({ question, answer, targetRole = "AI Engineer", persona = "alex" }) {
+export async function evaluateAnswer({ question, answer, targetRole = "AI Engineer", persona = "alex", sessionId = "sess_eval" }) {
+  logPrivacyAudit({
+    sessionId,
+    agentType: "evaluator",
+    promptId: "EVALUATOR_V1",
+    promptVersion: "1.0.0",
+    topic: "answer_evaluation",
+    questionNumber: 1,
+    fieldsUsed: ["question", "answer", "targetRole"],
+    estimatedTokens: 180
+  });
+
+  const systemInstruction = buildSystemPrompt([
+    "MASTER_V1",
+    "PRIVACY_WRAPPER_V1",
+    "ANTI_HALLUCINATION_V1",
+    "EVALUATOR_V1",
+    "UNIVERSAL_OUTPUT_RULE"
+  ]);
+
   const prompt = `
 Target Role: ${targetRole}
 Interviewer Question: "${question}"
 Candidate Answer: "${answer}"
 
 Evaluate the candidate's answer with extreme technical precision.
-Accuracy levels:
-- 1.0 = completely correct
-- 0.7 = mostly correct
-- 0.5 = partially correct
-- 0.3 = surface understanding
-- 0.0 = incorrect/no meaningful answer
-
+Accuracy levels: 1.0 (completely correct), 0.7 (mostly correct), 0.5 (partially correct), 0.3 (surface understanding), 0.0 (incorrect).
 Depth options: "deep", "structured", "surface"
 
-Required schema:
+Required JSON schema:
 {
   "accuracy": number (0.0, 0.3, 0.5, 0.7, or 1.0),
   "depth": "deep" | "structured" | "surface",
-  "explanation": "concise objective assessment of the answer",
-  "concepts_hit": ["array of correctly identified technical concepts"],
-  "concepts_missed": ["array of expected key concepts that were omitted or incorrect"],
-  "follow_up": "suggested follow-up probing question testing depth",
+  "explanation": "concise objective assessment",
+  "concepts_hit": ["array of correctly identified concepts"],
+  "concepts_missed": ["array of omitted/incorrect concepts"],
+  "follow_up": "suggested follow-up question testing depth",
   "follow_up_angle": "WHY" | "trade-offs" | "failure modes" | "scaling" | "deployment" | "edge cases",
-  "evidence_quote": "direct verbatim quote from candidate answer demonstrating mastery or flaw",
+  "evidence_quote": "verbatim quote from candidate answer",
   "misconception": "string describing misconception if any, else null"
 }
 `;
@@ -49,7 +63,7 @@ Required schema:
 
   const result = await generateStructuredJSON(
     prompt,
-    "You are a rigorous technical evaluator. Never invent evidence. Be strictly objective.",
+    systemInstruction,
     fallback
   );
 

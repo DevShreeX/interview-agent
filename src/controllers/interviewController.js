@@ -5,6 +5,7 @@ import { calculateCalibration, summarizeCalibrationLog } from "../services/calib
 import { updateBeliefState, getWeakestTopic } from "../services/beliefStateEngine.js";
 import { detectThinkingStyle } from "../services/thinkingStyleDetector.js";
 import { predictBreakpoint } from "../services/breakpointPredictor.js";
+import { recordSessionToMemory } from "../services/breetheMemory.js";
 
 /**
  * POST /api/interview/start
@@ -178,6 +179,14 @@ export async function completeInterview(req, res) {
     session.thinkingStyle = thinkingStyle;
     session.breakpoint = breakpoint;
     updateInterviewSession(sessionId, session);
+
+    // Save to durable Breethe memory across sessions
+    recordSessionToMemory(session.candidateId || "default_candidate", {
+      beliefState: session.beliefState,
+      calibrationSummary,
+      thinkingStyle,
+      weakestTopic: weakestTopicInfo.topic
+    });
 
     return res.status(200).json({
       sessionId: session.sessionId,

@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import interviewRoutes from "./routes/interviewRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import battleRoutes from "./routes/battleRoutes.js";
+import memoryRoutes from "./routes/memoryRoutes.js";
+import cohortRoutes from "./routes/cohortRoutes.js";
 
 dotenv.config();
 
@@ -23,10 +25,12 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// API Routes per 02_AI_BACKEND.md Section 17
+// API Routes per 02_AI_BACKEND.md Section 17 & 03_MEMORY_PRIVACY_PROMPTS.md Section 28
 app.use("/api/interview", interviewRoutes);
 app.use("/api/report", reportRoutes);
 app.use("/api/battle", battleRoutes);
+app.use("/api/memory", memoryRoutes);
+app.use("/api/cohort", cohortRoutes);
 
 // Error Handler
 app.use((err, req, res, next) => {
