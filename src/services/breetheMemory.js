@@ -1,7 +1,45 @@
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import { getInitialBeliefState } from "./beliefStateEngine.js";
 
-// Global candidate memory store (keyed by candidate ID or default candidate)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const MEMORY_FILE_PATH = path.join(__dirname, "../data/memoryStore.json");
+
+// Global candidate memory store (keyed by candidate ID)
 const memoryStore = new Map();
+
+// Hydrate from disk if file exists
+function loadMemoryFromDisk() {
+  try {
+    if (fs.existsSync(MEMORY_FILE_PATH)) {
+      const raw = fs.readFileSync(MEMORY_FILE_PATH, "utf8");
+      const data = JSON.parse(raw);
+      for (const [key, value] of Object.entries(data)) {
+        memoryStore.set(key, value);
+      }
+    }
+  } catch (err) {
+    console.warn("[Breethe Memory] Failed to load disk cache:", err.message);
+  }
+}
+
+// Persist memory to disk
+function saveMemoryToDisk() {
+  try {
+    const obj = {};
+    for (const [key, value] of memoryStore.entries()) {
+      obj[key] = value;
+    }
+    fs.writeFileSync(MEMORY_FILE_PATH, JSON.stringify(obj, null, 2), "utf8");
+  } catch (err) {
+    console.error("[Breethe Memory] Failed to persist to disk:", err.message);
+  }
+}
+
+// Hydrate on module load
+loadMemoryFromDisk();
 
 const BREETH_API_BASE = "https://api.thebreeth.com/v1";
 
@@ -105,8 +143,9 @@ export function recordSessionToMemory(candidateId = "default_candidate", session
     memory.beliefState = { ...sessionSummary.beliefState };
   }
 
-  // 2. Record Growth Trajectory entry
-  const readiness = sessionSummary.readiness || Math.round(Object.values(memory.beliefState).reduce((a, b) => a + b, 0) / 8 * 100);
+  const beliefScores = Object.values(memory.beliefState || {});
+  const keysCount = beliefScores.length || 8;
+  const readiness = sessionSummary.readiness || Math.round((beliefScores.reduce((a, b) => a + b, 0) / keysCount) * 100);
   const avgCalibrationDelta = sessionSummary.calibrationSummary?.averageDelta || 0;
 
   memory.growthTrajectory.push({
@@ -139,6 +178,7 @@ export function recordSessionToMemory(candidateId = "default_candidate", session
   }
 
   memoryStore.set(candidateId, memory);
+  saveMemoryToDisk();
 
   // Sync session to Breeth Cloud API asynchronously if configured
   const messages = [
@@ -170,6 +210,7 @@ export function recordBattleToMemory(candidateId = "default_candidate", battleSu
   }
 
   memoryStore.set(candidateId, memory);
+  saveMemoryToDisk();
 
   // Sync battle episode to Breeth Cloud API
   const messages = [
@@ -205,5 +246,6 @@ export function getPlannerMemoryContext(candidateId = "default_candidate") {
 
 export function clearMemoryStore() {
   memoryStore.clear();
+  saveMemoryToDisk();
 }
 

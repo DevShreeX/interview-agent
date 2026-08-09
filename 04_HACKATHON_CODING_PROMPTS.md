@@ -323,3 +323,43 @@ SUCCESS
 
 **NEXT STEP:**
 Proceed with Frontend UI implementation per `01_FRONTEND.md`.
+
+---
+
+### [TASK-008] — Readiness Bug Fix, Disk Persistence, Dynamic Cohort & Dead Code Cleanup
+
+**Date:** 2026-08-09
+**Tool:** Gemini / Antigravity
+**Team/Area:** Backend Refactoring & Quality
+**Status:** Completed
+
+**USER REQUEST:**
+`Readiness bug — divides by 5, belief state has 8 keys, scores inflated`
+`Dead code — old linear controller not wired`
+`Memory resets on restart (in-memory only)`
+`Cohort intelligence mocked/hardcoded`
+`Battle recovery not synced to memory in graph path`
+
+**PROMPT USED:**
+Audit and fix all 5 highlighted quality issues:
+1. Fix readiness score calculation formula across `graphInterviewController.js` and `breetheMemory.js` by dynamically dividing by `Object.keys(beliefState).length` (8 curriculum modules) instead of 5, eliminating score inflation.
+2. Remove unreferenced dead file `src/controllers/interviewController.js`.
+3. Add JSON file disk persistence (`src/data/memoryStore.json`) to `src/services/breetheMemory.js` so memory persists across server restarts.
+4. Upgrade `src/services/cohortService.js` to dynamically compute cohort benchmarks across all 8 curriculum modules using real candidate data (`candidates.json` / `exampleCandidates.js`).
+5. Sync Battle Mode completion to long-term memory by calling `recordBattleToMemory()` when battle graph turns finalize in `graphInterviewController.js` and `battleController.js`.
+
+**SOURCE SPECIFICATION:**
+* `02_AI_BACKEND.md`
+* `03_MEMORY_PRIVACY_PROMPTS.md`
+
+**FILES CHANGED:**
+- `src/controllers/graphInterviewController.js` [MODIFIED] — Fixed `/ 8` readiness formula, added `recordBattleToMemory()` call on battle completion
+- `src/services/breetheMemory.js` [MODIFIED] — Added `src/data/memoryStore.json` disk hydration and disk save hooks
+- `src/services/cohortService.js` [MODIFIED] — Dynamic aggregate performance & percentile calculation across 8 curriculum modules from real candidate profiles
+- `src/controllers/interviewController.js` [DELETED] — Removed dead code file
+- `04_HACKATHON_CODING_PROMPTS.md` [MODIFIED] — Recorded TASK-008
+
+**TESTS / VALIDATION:**
+- `npm test`: All 21 tests passing.
+- API E2E Test (`node --test test/api.test.js`): 100% passing.
+

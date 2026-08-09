@@ -6,7 +6,7 @@ import { summarizeCalibrationLog } from "../services/calibrationEngine.js";
 import { getWeakestTopic } from "../services/beliefStateEngine.js";
 import { detectThinkingStyle } from "../services/thinkingStyleDetector.js";
 import { predictBreakpoint } from "../services/breakpointPredictor.js";
-import { recordSessionToMemory } from "../services/breetheMemory.js";
+import { recordSessionToMemory, recordBattleToMemory } from "../services/breetheMemory.js";
 import { EXAMPLE_CANDIDATES } from "../data/exampleCandidates.js";
 import { getCurriculumModule, getTopicsForModule, getAllObjectivesForModule } from "../data/curriculum.js";
 
@@ -229,9 +229,13 @@ export async function completeInterview(req, res) {
       weakestTopic: weakestTopicInfo.topic
     });
 
+    const beliefScores = Object.values(session.beliefState || {});
+    const keysCount = beliefScores.length || 8;
+    const readiness = Math.round((beliefScores.reduce((a, b) => a + b, 0) / keysCount) * 100);
+
     return res.status(200).json({
       sessionId: session.sessionId,
-      readiness: Math.round(Object.values(session.beliefState).reduce((a, b) => a + b, 0) / 5 * 100),
+      readiness,
       calibration: calibrationSummary,
       thinkingStyle,
       evidence: session.history.map(h => h.evaluation?.evidence_quote).filter(Boolean),
@@ -297,9 +301,24 @@ export async function battleGraphTurn(req, res) {
     updateInterviewSession(sessionId, session);
 
     if (battle.completed) {
+      const avgAcc = battle.history.length > 0 
+        ? battle.history.reduce((sum, h) => sum + (h.evaluation?.accuracy || 0.5), 0) / battle.history.length 
+        : 0.5;
+      const afterScore = Number(avgAcc.toFixed(2));
+      const beforeScore = battle.beforeScore || 0.45;
+      const riskChange = Math.round(((afterScore - beforeScore) / beforeScore) * 100);
+
+      recordBattleToMemory(session.candidateId || "default_candidate", {
+        weakestTopic: battle.weakestTopic,
+        beforeScore,
+        afterScore,
+        riskChange
+      });
+
       return res.status(200).json({
         sessionId,
         battleComplete: true,
+        summary: { weakestTopic: battle.weakestTopic, beforeScore, afterScore, riskChange },
         message: "Battle Mode complete. Call GET /api/battle/results/:sessionId."
       });
     }
