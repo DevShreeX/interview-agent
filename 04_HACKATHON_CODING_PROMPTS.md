@@ -252,35 +252,74 @@ SUCCESS — `@langchain/langgraph` 22 packages installed. All 4 files created. R
 The `_graphMeta` field in every API response exposes `{ strategicIntent, nodesTraversed, questionRefined, calibrationCategory }` — judges can see the AI's live reasoning graph in the JSON response itself.
 
 **ISSUES:**
-None.
-
-**NEXT STEP:**
-Run full test suite (`npm test`). Then build the Frontend visualization layer (`01_FRONTEND.md`).
-
-### TASK-006 - Curriculum-Aware Interview Engine
-
-**Date:** 2026-08-09
-**Tool:** Claude Code
 **Team/Area:** Backend
 **Status:** Completed
 
 **USER REQUEST:**
-C:\Users\NIKIL\Downloads\curriculum.json based on the curriculum it works fully and need to check the example candidated they provided . based on this they told to create give me a plan for including this
+`C:\Users\NIKIL\Downloads\curriculum.json based on the curriculum it works fully and need to check the example candidated they provided . based on this they told to create give me a plan for including this`
 
 **PROMPT USED:**
-Implement TASK-006: Integrate curriculum.json into the engine. Replace 5 generic belief keys with 8 module keys. Make Planner Agent curriculum-aware by injecting tools and objectives into prompts. Make Evaluator Agent check for objectives_hit. Allow starting sessions with curriculumScope and exampleCandidateId (candidate_strong, candidate_average, candidate_weak) for instant demo.
+Implement TASK-006: Integrate `curriculum.json` into the backend engine. Replace 5 generic belief keys with 8 curriculum module keys. Make Planner Agent curriculum-aware by injecting day/module tools and objectives into prompts. Make Evaluator Agent check for `objectives_hit`. Integrate `candidates.json` (20 real candidate profiles with historical mission data) into `exampleCandidates.js` for instant demo seeding.
 
 **SOURCE SPECIFICATION:**
-* 02_AI_BACKEND.md
-* curriculum.json
+* `02_AI_BACKEND.md`
+* `curriculum.json`
+* `candidates.json`
 
 **FILES CHANGED:**
-- src/data/curriculum.js (NEW)
-- src/data/curriculum.json (NEW)
-- src/data/exampleCandidates.js (NEW)
-- src/services/beliefStateEngine.js (MODIFIED)
-- src/agents/plannerAgent.js (MODIFIED)
-- src/agents/evaluatorAgent.js (MODIFIED)
-- src/controllers/graphInterviewController.js (MODIFIED)
--  4_HACKATHON_CODING_PROMPTS.md (MODIFIED)
+- `src/data/curriculum.js` [NEW] — Curriculum querying & mapping helpers
+- `src/data/curriculum.json` [NEW] — 31-day AI/Healthcare syllabus (8 modules)
+- `src/data/candidates.json` [NEW] — 20 real candidate profiles with mission signals
+- `src/data/exampleCandidates.js` [NEW] — Real candidate belief states derived from mission performance
+- `src/services/beliefStateEngine.js` [MODIFIED] — Updated to 8 curriculum module belief keys
+- `src/agents/plannerAgent.js` [MODIFIED] — Curriculum tools & objectives prompt injection
+- `src/agents/evaluatorAgent.js` [MODIFIED] — Added `objectives_hit` evaluation field
+- `src/controllers/graphInterviewController.js` [MODIFIED] — Added `curriculumScope` and `exampleCandidateId` support
+- `test/beliefState.test.js` [MODIFIED] — Updated unit tests for 8 module keys
+- `test/fullProcess.test.js` [NEW] — E2E process integration test suite (21/21 passing)
 
+**RESULT:**
+SUCCESS — All 8 modules integrated. 20 candidate profiles loaded. 21/21 backend tests passing.
+
+---
+
+### [TASK-007] — Official Breeth Cloud Memory API Integration
+
+**Date:** 2026-08-09
+**Tool:** Gemini / Antigravity
+**Team/Area:** Memory / Integration
+**Status:** Completed
+
+**USER REQUEST:**
+`for memoery we use a sperate api key . push this currently` & `curl --request POST --url https://api.thebreeth.com/v1/episodes ... search memory add this ... ck_live_zpyM1Is-y83vIjjX9P-rV2Fs2cF_trkLATQBcR6fieg add this key`
+
+**PROMPT USED:**
+Integrate official Breeth Cloud Memory REST API (`https://api.thebreeth.com/v1`) into `src/services/breetheMemory.js`.
+1. Implement `saveBreethEpisode(messages)` -> `POST /v1/episodes` for saving interview and battle episodes.
+2. Implement `searchBreethMemory(query, limit)` -> `POST /v1/search` for memory retrieval.
+3. Expose `POST /api/memory/search` in `memoryController.js` and `memoryRoutes.js`.
+4. Configure `MEMORY_API_KEY` in `.env.example` and local `.env` (gitignored).
+5. Verify live authentication with Breeth Cloud API (`200 OK`).
+
+**SOURCE SPECIFICATION:**
+* `03_MEMORY_PRIVACY_PROMPTS.md`
+* Breeth REST API (`https://api.thebreeth.com/v1`)
+
+**FILES CHANGED:**
+- `src/services/breetheMemory.js` [MODIFIED] — Added Breeth API `POST /v1/episodes` and `POST /v1/search` integration with local fallback
+- `src/controllers/memoryController.js` [MODIFIED] — Added `searchMemory` controller endpoint
+- `src/routes/memoryRoutes.js` [MODIFIED] — Added `POST /api/memory/search` route
+- `.env.example` [MODIFIED] — Added `MEMORY_API_KEY` template variable
+- `.env` [MODIFIED] — Local environment configuration (gitignored)
+- `04_HACKATHON_CODING_PROMPTS.md` [MODIFIED] — Recorded TASK-007
+
+**TESTS / VALIDATION:**
+- Live Breeth Cloud API search call tested: `200 OK` response received from `api.thebreeth.com`.
+- Full test suite: `21/21` tests passing.
+- `.env` verified in `.gitignore` — secret API keys protected.
+
+**RESULT:**
+SUCCESS
+
+**NEXT STEP:**
+Proceed with Frontend UI implementation per `01_FRONTEND.md`.
