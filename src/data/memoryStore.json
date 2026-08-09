@@ -1,0 +1,39 @@
+{
+  "cand_test_99": {
+    "candidateId": "cand_test_99",
+    "interviewCount": 2,
+    "beliefState": {
+      "system_design": 0.61,
+      "rag": 0.7
+    },
+    "growthTrajectory": [
+      {
+        "sessionNumber": 1,
+        "readiness": 58,
+        "averageCalibrationDelta": 1.7,
+        "date": "2026-08-09T13:16:40.310Z"
+      },
+      {
+        "sessionNumber": 2,
+        "readiness": 64,
+        "averageCalibrationDelta": 1.1,
+        "date": "2026-08-09T13:16:40.311Z"
+      }
+    ],
+    "staleTopics": [
+      "system_design"
+    ],
+    "unresolvedWeaknesses": [],
+    "battleRecoveryHistory": [
+      {
+        "date": "2026-08-09T13:16:40.311Z",
+        "weakestTopic": "system_design",
+        "beforeScore": 0.48,
+        "afterScore": 0.64,
+        "riskChange": 16
+      }
+    ],
+    "lastSessionDate": "2026-08-09T13:16:40.311Z",
+    "metacognitiveTraits": []
+  }
+}

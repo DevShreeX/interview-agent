@@ -1,19 +1,27 @@
 {
-  "name": "interview-agent-monorepo",
+  "name": "interview-agent-backend",
   "version": "1.0.0",
-  "description": "Full-stack AI Interview Agent Monorepo",
-  "main": "server/src/index.js",
+  "description": "Interview Mirror AI - Backend Intelligence Engine",
   "type": "module",
+  "main": "src/index.js",
   "scripts": {
-    "install:all": "npm install --prefix server && npm install --prefix client",
-    "dev:server": "npm start --prefix server",
-    "dev:client": "npm run dev --prefix client",
-    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
-    "start": "npm start --prefix server",
-    "build": "npm run build --prefix client",
-    "test": "npm test --prefix server"
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test test/*.test.js"
   },
-  "devDependencies": {
-    "concurrently": "^8.2.2"
+  "keywords": [
+    "ai",
+    "interview-agent",
+    "interview-mirror",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@langchain/core": "^1.2.5",
+    "@langchain/langgraph": "^1.4.9",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
   }
 }
