@@ -3,9 +3,12 @@ import { parseStructuredJSON } from "../utils/jsonParser.js";
 
 dotenv.config();
 
-const API_KEY = process.env.LLM_API_KEY || process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY;
-const PROVIDER = (process.env.LLM_PROVIDER || "gemini").toLowerCase();
-const MODEL = process.env.LLM_MODEL || (PROVIDER === "openai" ? "gpt-4o" : "gemini-2.5-flash");
+const API_KEY = process.env.LLM_API_KEY || process.env.NVIDIA_API_KEY || process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY;
+const PROVIDER = (process.env.LLM_PROVIDER || "nvidia").toLowerCase();
+const DEFAULT_MODEL = (PROVIDER === "nvidia" || PROVIDER === "nim")
+  ? "meta/llama-3.3-70b-instruct"
+  : (PROVIDER === "openai" ? "gpt-4o" : "gemini-2.5-flash");
+const MODEL = process.env.LLM_MODEL || DEFAULT_MODEL;
 
 /**
  * Call the configured LLM with prompt and optional system instruction.
@@ -17,7 +20,35 @@ export async function generateCompletion(prompt, systemInstruction = "") {
   }
 
   try {
-    if (PROVIDER === "gemini") {
+    if (PROVIDER === "nvidia" || PROVIDER === "nim") {
+      const url = "https://integrate.api.nvidia.com/v1/chat/completions";
+      const messages = [];
+      if (systemInstruction) messages.push({ role: "system", content: systemInstruction });
+      messages.push({ role: "user", content: prompt });
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${API_KEY}`
+        },
+        body: JSON.stringify({
+          model: MODEL,
+          messages,
+          temperature: 0.2,
+          top_p: 0.7,
+          max_tokens: 1024
+        })
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`NVIDIA NIM API HTTP ${res.status}: ${errText}`);
+      }
+
+      const data = await res.json();
+      return data.choices?.[0]?.message?.content || "";
+    } else if (PROVIDER === "gemini") {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
       const payload = {
         contents: [
