@@ -255,13 +255,44 @@ export async function completeInterview(req, res) {
 export async function battleGraphTurn(req, res) {
   try {
     const { sessionId, answer } = req.body || {};
-    if (!sessionId || !answer) {
-      return res.status(400).json({ error: "sessionId and answer are required." });
+    if (!sessionId) {
+      return res.status(400).json({ error: "sessionId is required." });
     }
 
     const session = getInterviewSession(sessionId);
-    if (!session || !session.battleSession) {
-      return res.status(404).json({ error: "Battle session not found. Start a Battle Mode first via POST /api/battle/start." });
+    if (!session) {
+      return res.status(404).json({ error: "Interview session not found." });
+    }
+
+    // Auto-initialize battle session if it doesn't exist
+    if (!session.battleSession) {
+      const weakestTopicObj = Object.entries(session.beliefState || {}).sort((a,b)=>a[1]-b[1])[0];
+      const weakestTopic = weakestTopicObj ? weakestTopicObj[0] : "Vector Databases";
+
+      session.battleSession = {
+        battleId: sessionId,
+        weakestTopic: weakestTopic,
+        persona: session.persona,
+        questionNumber: 1,
+        history: [],
+        beforeScore: session.readiness || 0.45,
+        completed: false
+      };
+      
+      // If no answer is provided, we treat this as the "start" of the battle
+      if (!answer) {
+         session.battleSession.currentQuestion = `Let's dive deeper into ${weakestTopic}. Can you explain how you would handle edge cases in this area?`;
+         return res.status(200).json({
+            battleId: sessionId,
+            weakestTopic: weakestTopic,
+            questionNumber: 1,
+            question: session.battleSession.currentQuestion
+         });
+      }
+    }
+
+    if (!answer) {
+      return res.status(400).json({ error: "answer is required for a battle turn." });
     }
 
     const battle = session.battleSession;

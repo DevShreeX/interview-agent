@@ -10,26 +10,9 @@ export function parseStructuredJSON(rawText, fallbackObj = {}) {
   let cleaned = rawText.trim();
   cleaned = cleaned.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
 
-  // Find first { or [ and last } or ]
-  const firstBrace = cleaned.indexOf("{");
-  const firstBracket = cleaned.indexOf("[");
-
-  let startIdx = -1;
-  let isArray = false;
-
-  if (firstBrace !== -1 && (firstBracket === -1 || firstBrace < firstBracket)) {
-    startIdx = firstBrace;
-    isArray = false;
-  } else if (firstBracket !== -1) {
-    startIdx = firstBracket;
-    isArray = true;
-  }
-
-  if (startIdx !== -1) {
-    const endIdx = isArray ? cleaned.lastIndexOf("]") : cleaned.lastIndexOf("}");
-    if (endIdx > startIdx) {
-      cleaned = cleaned.substring(startIdx, endIdx + 1);
-    }
+  const match = cleaned.match(/{[\s\S]*}|\[[\s\S]*\]/);
+  if (match) {
+    cleaned = match[0];
   }
 
   try {

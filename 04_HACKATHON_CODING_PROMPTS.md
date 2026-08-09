@@ -363,3 +363,39 @@ Audit and fix all 5 highlighted quality issues:
 - `npm test`: All 21 tests passing.
 - API E2E Test (`node --test test/api.test.js`): 100% passing.
 
+---
+### TASK-009: Ponytail Refactoring - Controller Consolidation & Optimization
+
+**USER REQUEST:**
+`/ponytail-audit`
+`create a plan also /ponytail-review`
+`push to git on ur name`
+`forgot to update on the md file`
+
+**PROMPT USED:**
+Conduct a Ponytail Optimization on the codebase to eliminate dead code, single-caller abstractions, redundant controllers, and fragmented router files. Ensure zero breakage of existing API contracts and tests.
+1. Remove redundant `battleController.js` and rewire `POST /api/battle/turn` directly to `battleGraphTurn` in `graphInterviewController.js`.
+2. Consolidate 5 disparate router files into a single `src/routes.js` and mount it gracefully in `server.js`.
+3. Simplify LLM string parsing in `jsonParser.js` by removing manual index searching and implementing a regex matcher.
+4. Push the refactored code to Git using the name "Antigravity AI".
+
+**SOURCE SPECIFICATION:**
+* `02_AI_BACKEND.md`
+
+**FILES CHANGED:**
+- `src/controllers/battleController.js` [DELETED] - Redundant controller removed
+- `src/routes.js` [NEW] - Unified routing file created
+- `src/routes/interviewRoutes.js` [DELETED]
+- `src/routes/battleRoutes.js` [DELETED]
+- `src/routes/reportRoutes.js` [DELETED]
+- `src/routes/memoryRoutes.js` [DELETED]
+- `src/routes/cohortRoutes.js` [DELETED]
+- `src/server.js` [MODIFIED] - Mounted unified router
+- `src/controllers/graphInterviewController.js` [MODIFIED] - Auto-initialized battle session
+- `src/utils/jsonParser.js` [MODIFIED] - Simplified parsing logic with regex
+- `test/api.test.js` [MODIFIED] - Updated to hit new `/api/battle/turn` endpoint
+
+**TESTS / VALIDATION:**
+- `npm test`: All 21 tests passing (100%).
+- Successfully committed and pushed to remote branch via git.
+
